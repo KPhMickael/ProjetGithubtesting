@@ -29,4 +29,3 @@ class Eleve:
         self.notes.append(note)
         self.moyenne = sum(self.notes) / len(self.notes)
 
-
