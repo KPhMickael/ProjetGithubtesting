@@ -1,9 +1,7 @@
 class NoteInvalide(Exception):
     pass
 
-
 class Eleve:
-
 
     def __init__(self):
         self.notes = []
