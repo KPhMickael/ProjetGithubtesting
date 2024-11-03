@@ -1,3 +1,4 @@
+# Définition des classes Eleve et NoteInvalide
 class NoteInvalide(Exception):
     """Exception levée lorsque la note fournie est invalide."""
     pass
@@ -25,6 +26,7 @@ class Eleve:
         self.moyenne = sum(self.notes) / len(self.notes)
 
 
+# Tests unitaires avec pytest
 import pytest
 
 @pytest.fixture
@@ -49,17 +51,21 @@ def test_ajouter_note_invalide(eleve, note):
     with pytest.raises(NoteInvalide, match="La note doit être entre 0 et 20."):
         eleve.ajouter_note(note)
 
-def test_moyenne_apres_plusieurs_notes(eleve):
+@pytest.mark.parametrize("notes,expected_moyenne", [
+    ([10, 15, 20], (10 + 15 + 20) / 3),  # Test avec plusieurs notes
+    ([5, 10, 15], (5 + 10 + 15) / 3),    # Autre test avec plusieurs notes
+])
+def test_moyenne_apres_plusieurs_notes(eleve, notes, expected_moyenne):
     """Test la moyenne après l'ajout de plusieurs notes."""
-    eleve.ajouter_note(10)
-    eleve.ajouter_note(15)
-    eleve.ajouter_note(20)
-    assert eleve.moyenne == (10 + 15 + 20) / 3
+    for note in notes:
+        eleve.ajouter_note(note)
+    assert eleve.moyenne == expected_moyenne
 
-def test_ajouter_une_seule_note(eleve):
+@pytest.mark.parametrize("note", [18, 12, 0])  # Tests avec différentes notes valides
+def test_ajouter_une_seule_note(eleve, note):
     """Test l'ajout d'une seule note."""
-    eleve.ajouter_note(18)
-    assert eleve.moyenne == 18
+    eleve.ajouter_note(note)
+    assert eleve.moyenne == note
 
 if __name__ == "__main__":
     pytest.main()
