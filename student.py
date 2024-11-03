@@ -1,36 +1,31 @@
-import pytest
+class NoteInvalide(Exception):
+    """Exception levée lorsque la note fournie est invalide."""
+    pass
 
-@pytest.fixture
-def eleve():
-    """Fixture pour créer une instance d'Eleve pour les tests."""
-    return Eleve()
 
-def test_ajouter_note_valide(eleve):
-    """Test l'ajout d'une note valide."""
-    eleve.ajouter_note(15)
-    assert eleve.notes == [15]
-    assert eleve.moyenne == 15
+class Eleve:
+    """Représente un élève et gère ses notes.
 
-    eleve.ajouter_note(10)
-    assert eleve.notes == [15, 10]
-    assert eleve.moyenne == 12.5
+    Attributes:
+        notes (list): Une liste des notes de l'élève.
+        moyenne (float): La moyenne des notes de l'élève.
+    """
+    def __init__(self):
+        """Initialise un nouvel élève avec une liste de notes vide et une moyenne de 0."""
+        self.notes = []
+        self.moyenne = 0
 
-def test_ajouter_note_invalide(eleve):
-    """Test l'ajout d'une note invalide."""
-    with pytest.raises(NoteInvalide, match="La note doit être entre 0 et 20."):
-        eleve.ajouter_note(25)
+    def ajouter_note(self, note):
+        """Ajoute une note à l'élève et met à jour la moyenne.
 
-    with pytest.raises(NoteInvalide, match="La note doit être entre 0 et 20."):
-        eleve.ajouter_note(-1)
+        Args:
+            note (float): La note à ajouter, doit être comprise entre 0 et 20.
 
-def test_moyenne_apres_plusieurs_notes(eleve):
-    """Test la moyenne après l'ajout de plusieurs notes."""
-    eleve.ajouter_note(10)
-    eleve.ajouter_note(15)
-    eleve.ajouter_note(20)
-    assert eleve.moyenne == (10 + 15 + 20) / 3
+        Raises:
+            NoteInvalide: Si la note est inférieure à 0 ou supérieure à 20.
+        """
+        if note < 0 or note > 20:
+            raise NoteInvalide("La note doit être entre 0 et 20.")
+        self.notes.append(note)
+        self.moyenne = sum(self.notes) / len(self.notes)
 
-def test_ajouter_une_seule_note(eleve):
-    """Test l'ajout d'une seule note."""
-    eleve.ajouter_note(18)
-    assert eleve.moyenne == 18
