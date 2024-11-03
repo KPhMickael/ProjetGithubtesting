@@ -1,33 +1,6 @@
-# Définition des classes Eleve et NoteInvalide
-class NoteInvalide(Exception):
-    """Exception levée lorsque la note fournie est invalide."""
-    pass
-
-class Eleve:
-    """Classe pour gérer les notes d'un élève."""
-    
-    def __init__(self):
-        """Initialise une liste vide pour stocker les notes et la moyenne."""
-        self.notes = []
-        self.moyenne = 0
-
-    def ajouter_note(self, note):
-        """Ajoute une note à l'élève et met à jour la moyenne.
-
-        Args:
-            note (float): La note à ajouter. Doit être entre 0 et 20.
-
-        Raises:
-            NoteInvalide: Si la note est en dehors de l'intervalle autorisé.
-        """
-        if note < 0 or note > 20:
-            raise NoteInvalide("La note doit être entre 0 et 20.")
-        self.notes.append(note)
-        self.moyenne = sum(self.notes) / len(self.notes)
-
-
-# Tests unitaires avec pytest
 import pytest
+
+# Assurez-vous que les classes Eleve et NoteInvalide sont définies avant ce code.
 
 @pytest.fixture
 def eleve():
