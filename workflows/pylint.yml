@@ -1,0 +1,75 @@
+name: Lint with Pylint
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+jobs:
+  # Creation du job lint
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Étape 1 : Vérifier le code depuis le dépôt
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Étape 2 : Configurer Python
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.8'  # Vous pouvez spécifier la version de Python ici
+
+      # Étape 3 : Installer les dépendances (si nécessaire)
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint
+
+      # Étape 4 : Exécuter pylint et sauvegarder la sortie dans un fichier texte
+      - name: Run Pylint and save output
+        id: pylint_output
+        run: |
+          pylint test_student.py > pylint_output.txt
+        continue-on-error: true  # Si pylint échoue, continuer pour générer un rapport
+
+      # Étape 5 : Sauvegarder le fichier pylint_output.txt en tant qu'artefact
+      - name: Upload pylint output file
+        uses: actions/upload-artifact@v3
+        with:
+          name: pylint-output
+          path: pylint_output.txt
+
+generate_pdf:
+    runs-on: ubuntu-latest
+    needs: lint  # Ce job dépend du job "lint" pour récupérer le fichier de sortie
+    steps:
+      # Étape 1 : Vérifier le code depuis le dépôt
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Étape 2 : Installer pandoc et texlive pour la conversion en PDF
+      - name: Install pandoc and LaTeX
+        run: |
+          sudo apt-get install -y pandoc texlive-xetex
+
+      # Étape 3 : Télécharger le fichier de sortie de pylint
+      - name: Download pylint output file
+        uses: actions/download-artifact@v3
+        with:
+          name: pylint-output
+          path: ./  # Télécharge le fichier à la racine du répertoire
+
+      # Étape 4 : Convertir la sortie de pylint en PDF
+      - name: Convert output to PDF
+        run: |
+          pandoc pylint_output.txt -o pylint_report.pdf
+
+      # Étape 5 : Télécharger le fichier PDF généré
+      - name: Upload Pylint PDF report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pylint-report
+          path: pylint_report.pdf
