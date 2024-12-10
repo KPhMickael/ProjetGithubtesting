@@ -8,32 +8,28 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Cloner le dépôt Git
                 checkout scm
             }
         }
-
+        
         stage('Install Dependencies') {
             steps {
-                // Installer les dépendances nécessaires avec pip
                 script {
                     bat 'pip install -r requirements.txt'  // Commande pour Windows
                 }
             }
         }
-
+        
         stage('Run Tests') {
             steps {
-                // Exécuter pytest et générer un rapport XML
                 script {
                     bat 'pytest --junitxml=results.xml'  // Commande pour Windows
                 }
             }
         }
-
+        
         stage('Publish Test Results') {
             steps {
-                // Publier les résultats des tests
                 junit '**/results.xml'
             }
         }
@@ -41,7 +37,9 @@ pipeline {
 
     post {
         always {
-            // Actions à effectuer après l'exécution, comme nettoyer
+            // Exemple d'action à toujours exécuter
+            echo 'Pipeline exécuté, nettoyage ou autres actions peuvent être effectuées ici.'
+            // Vous pouvez ajouter ici des étapes comme nettoyer, notifier, ou autre
         }
     }
 }
