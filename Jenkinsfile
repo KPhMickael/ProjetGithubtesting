@@ -37,9 +37,8 @@ pipeline {
 
     post {
         always {
-            // Exemple d'action à toujours exécuter
-            echo 'Pipeline exécuté, nettoyage ou autres actions peuvent être effectuées ici.'
-            // Vous pouvez ajouter ici des étapes comme nettoyer, notifier, ou autre
+    echo 'Le pipeline est terminé.'
+    // Vous pouvez ajouter ici une étape pour envoyer un message ou nettoyer des fichiers temporaires
         }
     }
 }
