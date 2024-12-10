@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        PYTHON_ENV = 'C:/Python38'  // Adaptez selon votre installation
+        PYTHON_ENV = 'C:/Python38'  // Adaptez selon votre installation Python
     }
     
     stages {
@@ -15,7 +15,12 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 script {
-                    bat 'pip install -r requirements.txt'  // Commande pour Windows
+                    // Vérifier la version de Python et pip sur l'agent Jenkins
+                    bat 'python --version'  // Vérifie la version de Python
+                    bat 'pip --version'  // Vérifie la version de pip
+                    
+                    // Installer pytest directement sans requirements.txt
+                    bat 'pip install pytest'  // Installe pytest directement
                 }
             }
         }
@@ -23,22 +28,23 @@ pipeline {
         stage('Run Tests') {
             steps {
                 script {
-                    bat 'pytest --junitxml=results.xml'  // Commande pour Windows
+                    // Exécuter les tests avec pytest et générer un fichier XML
+                    bat 'pytest --junitxml=results.xml'  // Exécution de pytest et génération du rapport
                 }
             }
         }
         
         stage('Publish Test Results') {
             steps {
-                junit '**/results.xml'
+                // Publie les résultats de test sous forme de rapport JUnit
+                junit '**/results.xml'  // Spécifie le chemin vers le fichier XML généré par pytest
             }
         }
     }
 
     post {
         always {
-    echo 'Le pipeline est terminé.'
-    // Vous pouvez ajouter ici une étape pour envoyer un message ou nettoyer des fichiers temporaires
+            echo 'Pipeline terminé.'
         }
     }
 }
