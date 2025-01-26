@@ -44,7 +44,15 @@ pipeline {
 
     post {
         always {
-            echo 'Pipeline terminé.'
+            cleanWs() // Nettoyer l'espace de travail après chaque exécution
+        }
+        success {
+            // Actions après un build réussi
+            echo 'Tests passés avec succès !'
+        }
+        failure {
+            // Actions en cas d'échec
+            echo 'Le build a échoué.'
         }
     }
 }
