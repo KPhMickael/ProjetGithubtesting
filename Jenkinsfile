@@ -3,31 +3,26 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'URL_DE_VOTRE_DEPOT_GITHUB'
+                git 'https://github.com/user/repo.git'
             }
         }
-        stage('Build') {
+        stage('Install dependencies') {
             steps {
-                sh 'echo "Building..."'
-                // Exécutez vos commandes de build ici
+                sh '''
+                python3 -m venv venv
+                source venv/bin/activate
+                pip install -r requirements.txt
+                '''
             }
         }
-        stage('Test') {
+        stage('Run Tests') {
             steps {
-                sh 'echo "Running tests..."'
-                // Exécutez vos tests unitaires ici
+                sh 'source venv/bin/activate && pytest --junitxml=report.xml'
             }
         }
-        stage('Quality Check') {
+        stage('Publish Test Results') {
             steps {
-                sh 'echo "Checking code quality..."'
-                // Intégrez ici des outils comme SonarQube pour vérifier la qualité du code
-            }
-        }
-        stage('Deploy') {
-            steps {
-                sh 'echo "Deploying..."'
-                // Ajoutez ici les étapes de déploiement si nécessaire
+                junit 'report.xml'
             }
         }
     }
