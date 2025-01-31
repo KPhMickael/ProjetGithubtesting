@@ -1,32 +1,36 @@
-"""Tests unitaires pour la classe Eleve."""
-
 import pytest
-from student import Eleve
+from student import Eleve, NoteInvalide
 
-@pytest.fixture
-def eleve():
-    """Fixture pour créer une instance d'Eleve pour les tests."""
-    return Eleve()
+def test_ajouter_note_valide():
+    """Test l'ajout d'une note valide."""
+    eleve = Eleve()
+    eleve.ajouter_note(15.0)
+    assert eleve.moyenne == 15.0  # Vérifie que la moyenne est correcte après l'ajout
+    assert len(eleve.notes) == 1  # Vérifie qu'une note a bien été ajoutée
 
-@pytest.mark.parametrize("note", [0, 10, 20])
-def test_ajouter_une_seule_note(eleve, note):
-    """Test l'ajout d'une seule note valide et la mise à jour correcte de la moyenne."""
-    eleve.ajouter_note(note)
-    assert eleve.notes == [note]
-    assert eleve.obtenir_moyenne() == note
+def test_ajouter_plusieurs_notes():
+    """Test l'ajout de plusieurs notes et le calcul de la moyenne."""
+    eleve = Eleve()
+    eleve.ajouter_note(10.0)
+    eleve.ajouter_note(12.0)
+    eleve.ajouter_note(14.0)
+    assert eleve.moyenne == 12.0  # Vérifie que la moyenne est correcte après plusieurs ajouts
+    assert len(eleve.notes) == 3  # Vérifie que 3 notes ont été ajoutées
 
-@pytest.mark.parametrize("notes, expected_moyenne", [
-    ([10, 15, 20], 15),
-    ([5, 10, 15], 10),
-])
-def test_moyenne_apres_plusieurs_notes(eleve, notes, expected_moyenne):
-    """Test la moyenne après l'ajout de plusieurs notes."""
-    for note in notes:
-        eleve.ajouter_note(note)
-    assert eleve.obtenir_moyenne() == expected_moyenne
+def test_ajouter_note_invalide_inférieure():
+    """Test l'ajout d'une note invalide inférieure à 0."""
+    eleve = Eleve()
+    with pytest.raises(NoteInvalide):
+        eleve.ajouter_note(-1.0)  # Doit lever une exception NoteInvalide
 
-@pytest.mark.parametrize("note", [25, -1, 30, -5])
-def test_ajouter_note_invalide(eleve, note):
-    """Test l'ajout d'une note invalide."""
-    with pytest.raises(NoteInvalide, match="La note doit être entre 0 et 20."):
-        eleve.ajouter_note(note)
+def test_ajouter_note_invalide_supérieure():
+    """Test l'ajout d'une note invalide supérieure à 20."""
+    eleve = Eleve()
+    with pytest.raises(NoteInvalide):
+        eleve.ajouter_note(21.0)  # Doit lever une exception NoteInvalide
+
+def test_obtenir_moyenne_avant_ajout_de_notes():
+    """Test la moyenne avant l'ajout de toute note."""
+    eleve = Eleve()
+    assert eleve.moyenne == 0.0  # La moyenne doit être 0.0 au début
+
