@@ -1,28 +1,40 @@
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/user/repo.git'
+                git branch: 'main',
+                    url: 'https://github.com/KPhMickael/ProjetGithubtesting.git'
             }
         }
-        stage('Install dependencies') {
+        stage('Install Dependencies') {
             steps {
-                sh '''
-                python3 -m venv venv
-                source venv/bin/activate
-                pip install -r requirements.txt
-                '''
+                script {
+                    if (isUnix()) {
+                        sh 'python3 -m pip install -r requirements.txt'
+                    } else {
+                        bat 'python -m pip install -r requirements.txt'
+                    }
+                }
             }
         }
-        stage('Run Tests') {
+        stage('Code Quality Check') {
             steps {
-                sh 'source venv/bin/activate && pytest --junitxml=report.xml'
+                script {
+                    def pylintCommand = isUnix() ? 'python3 -m pylint' : 'python -m pylint'
+                    def pylintOutput = "pylint-report.txt"
+                    if (isUnix()) {
+                        sh "${pylintCommand} --rcfile=pylintrc src/**/*.py > ${pylintOutput}"
+                    } else {
+                        bat "${pylintCommand} --rcfile=pylintrc src/**/*.py > ${pylintOutput}"
+                    }
+                }
             }
-        }
-        stage('Publish Test Results') {
-            steps {
-                junit 'report.xml'
+            post {
+                always {
+                    archiveArtifacts artifacts: 'pylint-report.txt', allowEmptyArchive: true
+                }
             }
         }
     }
