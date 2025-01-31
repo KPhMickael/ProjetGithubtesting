@@ -1,8 +1,3 @@
-"""Module définissant une classe Eleve pour gérer les notes d'un étudiant."""
-
-class NoteInvalide(Exception):
-    """Exception levée lorsque la note fournie est invalide."""
-
 class Eleve:
     """Représente un élève et gère ses notes."""
 
@@ -20,8 +15,12 @@ class Eleve:
         Raises:
             NoteInvalide: Si la note est inférieure à 0 ou supérieure à 20.
         """
-        if not 0 <= note <= 20:  # Suppression des parenthèses inutiles
+        if not 0 <= note <= 20:
             raise NoteInvalide("La note doit être entre 0 et 20.")
 
         self.notes.append(note)
         self.moyenne = sum(self.notes) / len(self.notes)
+
+    def get_moyenne(self):
+        """Retourne la moyenne des notes de l'élève."""
+        return self.moyenne
