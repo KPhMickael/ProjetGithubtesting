@@ -1,3 +1,5 @@
+"""Module de gestion des élèves et de leurs notes."""
+
 class NoteInvalide(Exception):
     """Exception levée lorsque la note fournie est invalide."""
     pass
@@ -19,8 +21,8 @@ class Eleve:
         Raises:
             NoteInvalide: Si la note est inférieure à 0 ou supérieure à 20.
         """
-        if not (0 <= note <= 20):
+        if not 0 <= note <= 20:
             raise NoteInvalide("La note doit être entre 0 et 20.")
-        
+
         self.notes.append(note)
-        self.moyenne = sum(self.notes) / len(self.notes)  # Correction du bug
+        self.moyenne = sum(self.notes) / len(self.notes)
