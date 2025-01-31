@@ -25,9 +25,9 @@ pipeline {
                     def pylintCommand = isUnix() ? 'python3 -m pylint' : 'python -m pylint'
                     def pylintOutput = "pylint-report.txt"
                     if (isUnix()) {
-                        sh "${pylintCommand} script.py > ${pylintOutput} 2>&1"
+                        sh "${pylintCommand} student.py > ${pylintOutput} 2>&1"
                     } else {
-                        bat "${pylintCommand} script.py > ${pylintOutput} 2>&1"
+                        bat "${pylintCommand} student.py > ${pylintOutput} 2>&1"
                     }
                 }
             }
