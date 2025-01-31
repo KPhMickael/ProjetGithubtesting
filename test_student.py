@@ -1,3 +1,5 @@
+"""Tests unitaires pour la classe Eleve."""
+
 import pytest
 from student import Eleve, NoteInvalide
 
@@ -28,6 +30,3 @@ def test_ajouter_note_invalide(eleve, note):
     """Test l'ajout d'une note invalide."""
     with pytest.raises(NoteInvalide, match="La note doit être entre 0 et 20."):
         eleve.ajouter_note(note)
-
-if __name__ == "__main__":
-    pytest.main()
