@@ -26,3 +26,7 @@ class Eleve:
 
         self.notes.append(note)
         self.moyenne = sum(self.notes) / len(self.notes)
+
+    def obtenir_moyenne(self):
+        """Retourne la moyenne des notes de l'élève."""
+        return self.moyenne
