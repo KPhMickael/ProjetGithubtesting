@@ -1,2 +1,4 @@
+# Exemple de contenu de requirements.txt
 pytest
 pytest-xdist
+pylint
