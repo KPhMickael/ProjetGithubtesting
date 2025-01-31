@@ -39,7 +39,7 @@ pipeline {
                     if (fileExists('%TEST_RESULTS_DIR%\\results.xml')) {
                         archiveArtifacts artifacts: '%TEST_RESULTS_DIR%\\results.xml', allowEmptyArchive: true // Creation de artefact
                     } else {
-                        error "Le fichier test-results.xml n'a pas été trouvé."
+                        error "Le fichier results.xml n'a pas été trouvé."
                     }
                 }
             }
