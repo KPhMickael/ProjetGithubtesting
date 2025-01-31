@@ -1,50 +1,46 @@
 pipeline {
     agent any
 
+    environment {
+        PYTHON_ENV = 'venv'
+	WORKSPACE_DIR = 'C:\\Jenkins\\workspace'
+        TEST_RESULTS_DIR = 'C:\\Jenkins'  // Dossier pour stocker les résultats
+    }
     stages {
-        stage('Checkout') {
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/KPhMickael/jenkinsrepo.git'
-            }
-        }
-        stage('Install Dependencies') {
+	stage('Checkout') {
             steps {
                 script {
-                    if (isUnix()) {
-                        sh 'python3 -m pip install -r requirements.txt'
-                    } else {
-                        bat 'python -m pip install -r requirements.txt'
+                    try {
+                        checkout scm  // Vas chercher code github
+                    } catch (Exception e) {
+                        error "echec checkout : ${e}"
                     }
                 }
             }
         }
-        stage('Run Tests') {
+        stage('PythonEnvironement') {
             steps {
-                script {
-                    if (isUnix()) {
-                        sh 'python3 -m pytest script.py'
-                    } else {
-                        bat 'python -m pytest script.py'
-                    }
+                script { 
+                    bat 'python -m venv %PYTHON_ENV%'
+                    bat '%PYTHON_ENV%\\Scripts\\pip install -r requirements.txt'
                 }
             }
         }
-        stage('Code Quality Check') {
+        stage('Runtest') {
             steps {
-                script {
-                    def pylintCommand = isUnix() ? 'python3 -m pylint' : 'python -m pylint'
-                    def pylintOutput = "pylint-report.txt"
-                    if (isUnix()) {
-                        sh "${pylintCommand} script.py > ${pylintOutput}"
-                    } else {
-                        bat "${pylintCommand} script.py > ${pylintOutput}"
-                    }
+                script { 
+                    bat '%PYTHON_ENV%\\Scripts\\pytest --maxfail=1 --disable-warnings -q --junitxml=%TEST_RESULTS_DIR%\\results.xml'
                 }
             }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'pylint-report.txt', allowEmptyArchive: true
+        }
+        stage('CreationArtefact') {
+            steps {
+                script {
+                    if (fileExists('%TEST_RESULTS_DIR%\\results.xml')) {
+                        archiveArtifacts artifacts: '%TEST_RESULTS_DIR%\\results.xml', allowEmptyArchive: true // Creation de artefact
+                    } else {
+                        error "Le fichier test-results.xml n'a pas été trouvé."
+                    }
                 }
             }
         }
