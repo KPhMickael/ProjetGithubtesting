@@ -1,3 +1,11 @@
+"""Module de gestion des élèves et de leurs notes.
+
+Ce module contient la classe Eleve, 
+qui permet de gérer les notes des élèves et de calculer leurs moyennes. 
+Il lève une exception NoteInvalide si
+une note donnée est en dehors de la plage valide (0-20).
+"""
+
 class NoteInvalide(Exception):
     """Exception levée lorsqu'une note est invalide (hors plage 0-20)."""
     pass
@@ -6,7 +14,9 @@ class Eleve:
     """Représente un élève et gère ses notes."""
 
     def __init__(self):
-        """Initialise un nouvel élève avec une liste de notes vide et une moyenne de 0."""
+        """Initialise un nouvel élève avec une liste
+        de notes vide et une moyenne de 0.
+        """
         self.notes = []
         self.moyenne = 0.0
 
@@ -14,7 +24,8 @@ class Eleve:
         """Ajoute une note à l'élève et met à jour la moyenne.
 
         Args:
-            note (float): La note à ajouter, doit être comprise entre 0 et 20.
+            note (float): La note à ajouter,
+            doit être comprise entre 0 et 20.
 
         Raises:
             NoteInvalide: Si la note est inférieure à 0 ou supérieure à 20.
