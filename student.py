@@ -1,4 +1,6 @@
-"""Module de gestion des élèves et de leurs notes."""
+class NoteInvalide(Exception):
+    """Exception levée lorsqu'une note est invalide (hors plage 0-20)."""
+    pass
 
 class Eleve:
     """Représente un élève et gère ses notes."""
