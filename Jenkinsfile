@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    url: 'https://github.com/KPhMickael/ProjetGithubtesting.git'
+                    url: 'https://github.com/KPhMickael/jenkinsrepo.git'
             }
         }
         stage('Install Dependencies') {
@@ -19,15 +19,26 @@ pipeline {
                 }
             }
         }
+        stage('Run Tests') {
+            steps {
+                script {
+                    if (isUnix()) {
+                        sh 'python3 -m pytest script.py'
+                    } else {
+                        bat 'python -m pytest script.py'
+                    }
+                }
+            }
+        }
         stage('Code Quality Check') {
             steps {
                 script {
                     def pylintCommand = isUnix() ? 'python3 -m pylint' : 'python -m pylint'
                     def pylintOutput = "pylint-report.txt"
                     if (isUnix()) {
-                        sh "${pylintCommand} --rcfile=pylintrc src/**/*.py > ${pylintOutput}"
+                        sh "${pylintCommand} script.py > ${pylintOutput}"
                     } else {
-                        bat "${pylintCommand} --rcfile=pylintrc src/**/*.py > ${pylintOutput}"
+                        bat "${pylintCommand} script.py > ${pylintOutput}"
                     }
                 }
             }
