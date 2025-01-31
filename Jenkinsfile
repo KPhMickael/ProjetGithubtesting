@@ -33,16 +33,6 @@ pipeline {
                 }
             }
         }
-        stage('CreationArtefact') {
-            steps {
-                script {
-                    if (fileExists('%TEST_RESULTS_DIR%\\results.xml')) {
-                        archiveArtifacts artifacts: '%TEST_RESULTS_DIR%\\results.xml', allowEmptyArchive: true // Creation de artefact
-                    } else {
-                        error "Le fichier results.xml n'a pas été trouvé."
-                    }
-                }
-            }
-        }
+        
     }
 }
